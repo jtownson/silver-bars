@@ -8,8 +8,9 @@ import static java.util.function.Predicate.isEqual;
 import static javaslang.collection.Queue.empty;
 
 /**
- * Register an order
- * Cancel an order
+ * Requirements 1. and 2.
+ * 1. Register an order
+ * 2. Cancel an order
  * Implemented as a persistent data structure
  * @see <a href="https://en.wikipedia.org/wiki/Persistent_data_structure"/>
  */

@@ -14,45 +14,44 @@ requirements 1. and 2. please see OrderBoardTest. For requirement 3.
 please see SummarizerTest.
 
 ## Assumptions
+
+I have assumed the number of orders is reasonably small. 
 For an application in which the number of orders being added or
-deleted is large, it would be sensible to stream order add/remove events
-to a store and incrementally update displays and statistics.
+deleted is large, it might be sensible to stream order add/remove events
+to a store and incrementally update summaries. For this test, 
+the summary is calculated by re-reading the entire dataset (using a 
+group by operation). 
 
-For this test, I have assumed that the number of updates is small
-and can refresh the summary by re-reading the entire dataset. There is
-no requirement to contradict this and it is consistent
-with a 'minimum viable product' approach preferred in agile development.
-
-A cancellation for a non-existent order is considered to be an ignorable
-event. Therefore an order and cancellation arriving in the wrong order
-(which can sometimes happen in concurrent systems) is not supported. I 
-assume this is okay.
+I have assumed orders and subsequent cancellations will arrive in the 
+correct order (i.e. an order always arrives before its cancellation). 
+This is sometimes an unacceptable assumption for concurrent systems 
+but I wanted to keep things simple. 
 
 To satisfy the sorting requirement (sell orders by price ascending and buy 
 orders by price descending) I have assumed that order summaries are 
-retrieved by order type.
+retrieved by order type. i.e. summarize(BUY) or summarize(SELL).
 
 ## Implementation notes
 
 I have used lombok to provide reliable implementations of equals and 
-hashcode and save boilerplate. If using intellij, it helps if you install
-the lombok plugin.
+hashcode and save boilerplate. It helps if you install
+the lombok plugin in your IDE.
 
 For the OrderBoardTest I have used a property-based testing library called
 junit-quickcheck. The library helps to generate order data statistically,
 including edge cases like empty order lists, single order lists, 
 orders with strange characters, etc. I find it saves a great deal of laborious
 typing when creating test cases and provides a good 'independent eye' of
-one's code, finding ways to break code that the author, with his head in
-a particular mindset had not considered.
+one's code, finding ways to break code that the code's author forgets
+to consider.
 
-I have used the javaslang collection library, which enables
-sorting and grouping operations, usually in a single line of code.
+I have used the javaslang collection library to handle the sorting 
+and grouping operations.
 
-My preference is for the functional, immutable style. I find it
+My preference is for the functional, immutable style as I find it
 makes implementing data-munging easier and more reliable.
-However, 'my own standards' of coding are sympathetic to the norms of
-the team.
+However, 'my own standards' of coding are flexible according 
+to the norms of the team.
 
 ## Re-statement of the requirements
 

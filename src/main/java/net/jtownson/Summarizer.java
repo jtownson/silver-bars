@@ -9,6 +9,10 @@ import java.util.Comparator;
 import static java.util.Comparator.comparing;
 import static net.jtownson.OrderType.SELL;
 
+/**
+ * Requirement 3.
+ * Summarize an order.
+ */
 class Summarizer {
 
     static Seq<OrderGroup> summarize(OrderBoard orderBoard, OrderType orderType) {

@@ -21,12 +21,15 @@ public class SummarizerTest {
                 new OrderGroup(new BigDecimal("307"), new BigDecimal("1.5")),
                 new OrderGroup(new BigDecimal("310"), new BigDecimal("1.2")));
 
+        // check correct handling of sell orders
         summaryTestCase(SELL, expectedSummary);
 
+        // and that buy order are the same except with reverse ordering
         summaryTestCase(BUY, expectedSummary.reverse());
     }
 
     private void summaryTestCase(OrderType orderType, Seq<OrderGroup> expectedSummary) {
+        // sample orders from the exercise description
         Order a = new Order("user1", new BigDecimal("3.5"), new BigDecimal("306"), orderType);
         Order b = new Order("user2", new BigDecimal("1.2"), new BigDecimal("310"), orderType);
         Order c = new Order("user3", new BigDecimal("1.5"), new BigDecimal("307"), orderType);
