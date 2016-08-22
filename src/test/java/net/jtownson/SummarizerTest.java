@@ -1,12 +1,12 @@
 package net.jtownson;
 
+import javaslang.collection.List;
 import javaslang.collection.Seq;
 import javaslang.collection.Stream;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 
-import static java.util.Arrays.asList;
 import static net.jtownson.OrderType.BUY;
 import static net.jtownson.OrderType.SELL;
 import static org.hamcrest.CoreMatchers.is;
@@ -35,7 +35,7 @@ public class SummarizerTest {
         Order c = new Order("user3", new BigDecimal("1.5"), new BigDecimal("307"), orderType);
         Order d = new Order("user4", new BigDecimal("2.0"), new BigDecimal("306"), orderType);
 
-        OrderBoard orderBoard = new OrderBoard().register(asList(a, b, c, d));
+        OrderBoard orderBoard = new OrderBoard().register(List.of(a, b, c, d));
 
         Seq<OrderGroup> summary = Summarizer.summarize(orderBoard, orderType);
 

@@ -1,18 +1,12 @@
 package net.jtownson;
 
-import com.pholser.junit.quickcheck.From;
 import com.pholser.junit.quickcheck.Property;
-import com.pholser.junit.quickcheck.generator.GenerationStatus;
-import com.pholser.junit.quickcheck.generator.Generator;
-import com.pholser.junit.quickcheck.generator.java.lang.StringGenerator;
-import com.pholser.junit.quickcheck.generator.java.math.BigDecimalGenerator;
-import com.pholser.junit.quickcheck.internal.generator.EnumGenerator;
-import com.pholser.junit.quickcheck.random.SourceOfRandomness;
 import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
+import javaslang.collection.List;
 import javaslang.collection.Queue;
+import javaslang.collection.Seq;
 import org.junit.runner.RunWith;
 
-import java.util.List;
 import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -22,7 +16,7 @@ import static org.junit.Assert.assertThat;
 public class OrderBoardTest {
 
     @Property
-    public void ordersRegisteredWillBeAvailable(List<@From(OrderGenerator.class) Order> orders) {
+    public void ordersRegisteredWillBeAvailable(List<Order> orders) {
         // when
         OrderBoard orderBoard = new OrderBoard().register(orders);
 
@@ -31,7 +25,7 @@ public class OrderBoardTest {
     }
 
     @Property
-    public void ordersCancelledWillNotBeAvailable(List<@From(OrderGenerator.class) Order> orders) {
+    public void ordersCancelledWillNotBeAvailable(List<Order> orders) {
         // given
         Order cancelledOrder = randomEntry(orders);
         Queue<Order> expectedOrders = Queue.ofAll(orders).remove(cancelledOrder);
@@ -41,7 +35,7 @@ public class OrderBoardTest {
                                             .register(orders)
                                             .cancel(cancelledOrder);
 
-        Queue<Order> actualOrders = orderBoard.orders();
+        Seq<Order> actualOrders = orderBoard.orders();
 
         // then
         assertThat(actualOrders.contains(cancelledOrder), is(false));
@@ -49,7 +43,7 @@ public class OrderBoardTest {
     }
 
     @Property
-    public void youCannotCancelAnOrderBeforePlacingIt(List<@From(OrderGenerator.class) Order> orders) {
+    public void youCannotCancelAnOrderBeforePlacingIt(List<Order> orders) {
         // given
         Order cancelledOrder = randomEntry(orders);
 
@@ -58,19 +52,19 @@ public class OrderBoardTest {
                 .cancel(cancelledOrder)
                 .register(orders);
 
-        Queue<Order> actualOrders = orderBoard.orders();
+        Seq<Order> actualOrders = orderBoard.orders();
 
         // then
         assertThat(actualOrders.containsAll(orders), is(true));
     }
 
     @Property
-    public void ordersWillBeProcessedInTheOrderInWhichTheyArePlaced(@From(OrderGenerator.class) Order o0,
-                                                                    @From(OrderGenerator.class) Order o1,
-                                                                    @From(OrderGenerator.class) Order o2) {
+    public void ordersWillBeProcessedInTheOrderInWhichTheyArePlaced(Order o0,
+                                                                    Order o1,
+                                                                    Order o2) {
         // when
         OrderBoard orderBoard = new OrderBoard().register(o0).register(o1).register(o2);
-        Queue<Order> orders = orderBoard.orders();
+        Seq<Order> orders = orderBoard.orders();
 
         // then
         assertThat(orders.get(0), is(o0));
@@ -80,25 +74,5 @@ public class OrderBoardTest {
 
     private static <T> T randomEntry(List<T> l) {
         return l.size() == 0 ? null : l.get(new Random().nextInt(l.size()));
-    }
-
-    public static class OrderGenerator extends Generator<Order> {
-
-        static BigDecimalGenerator decimalGenerator = new BigDecimalGenerator();
-        static StringGenerator stringGenerator = new StringGenerator();
-        static EnumGenerator enumGenerator = new EnumGenerator(OrderType.class);
-
-        public OrderGenerator() {
-            super(Order.class);
-        }
-
-        @Override
-        public Order generate(SourceOfRandomness sourceOfRandomness, GenerationStatus generationStatus) {
-            return new Order(
-                    stringGenerator.generate(sourceOfRandomness, generationStatus),
-                    decimalGenerator.generate(sourceOfRandomness, generationStatus),
-                    decimalGenerator.generate(sourceOfRandomness, generationStatus),
-                    (OrderType)enumGenerator.generate(sourceOfRandomness, generationStatus));
-        }
     }
 }

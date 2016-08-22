@@ -1,11 +1,10 @@
 package net.jtownson;
 
-import javaslang.collection.Queue;
-
-import java.util.List;
+import javaslang.collection.List;
+import javaslang.collection.Seq;
 
 import static java.util.function.Predicate.isEqual;
-import static javaslang.collection.Queue.empty;
+import static javaslang.collection.List.empty;
 
 /**
  * Requirements 1. and 2.
@@ -16,29 +15,29 @@ import static javaslang.collection.Queue.empty;
  */
 class OrderBoard {
 
-    private final Queue<Order> orders;
+    private final List<Order> orders;
 
     OrderBoard() {
         this(empty());
     }
 
-    private OrderBoard(Queue<Order> orders) {
+    private OrderBoard(List<Order> orders) {
         this.orders = orders;
     }
 
     OrderBoard register(Order order) {
-        return new OrderBoard(orders.append(order));
+        return new OrderBoard(orders.prepend(order));
     }
 
     OrderBoard register(List<Order> orders) {
-        return Queue.ofAll(orders).foldLeft(this, OrderBoard::register);
+        return orders.foldLeft(this, OrderBoard::register);
     }
 
     OrderBoard cancel(Order order) {
         return new OrderBoard(orders.filter(isEqual(order).negate()));
     }
 
-    Queue<Order> orders() {
-        return orders;
+    Seq<Order> orders() {
+        return orders.reverse();
     }
 }

@@ -1,6 +1,5 @@
 package net.jtownson;
 
-import javaslang.collection.Queue;
 import javaslang.collection.Seq;
 
 import java.math.BigDecimal;
@@ -22,7 +21,7 @@ class Summarizer {
                 sorted(accordingTo(orderType));
     }
 
-    private static BigDecimal sumQuantity(Queue<Order> orders) {
+    private static BigDecimal sumQuantity(Seq<Order> orders) {
         return orders.map(Order::getQuantity).foldLeft(new BigDecimal("0"), BigDecimal::add);
     }
 
